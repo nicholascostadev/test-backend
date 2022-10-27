@@ -10,5 +10,7 @@ router.post('/sellings', sellingController.createSelling)
 router.delete('/sellings/:id', sellingController.deleteSelling)
 // update a selling
 router.put('/sellings/:id', sellingController.updateSelling)
+// set ids for sellings(used because database doesn't have unique ids)
+router.post('/sellings/newId', sellingController.newId)
 
 export default router
