@@ -8,6 +8,7 @@ router.get('/sellings', sellingController.getAllSellings)
 router.post('/sellings', sellingController.createSelling)
 // delete a selling
 router.delete('/sellings/:id', sellingController.deleteSelling)
+router.delete('/sellings/many/:ids', sellingController.deleteManySellings)
 // update a selling
 router.put('/sellings/:id', sellingController.updateSelling)
 // set ids for sellings(used because database doesn't have unique ids)
