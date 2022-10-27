@@ -2,11 +2,13 @@ import cors from 'cors'
 import fs from 'fs'
 import express from 'express'
 import sellings from './db.json'
+import { authMiddleware } from './middlewares/authMiddleware'
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(authMiddleware)
 
 app.get('/', (_, res) => {
   return res.send('Hello World!')
