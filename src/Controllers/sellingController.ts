@@ -35,7 +35,7 @@ export class sellingController {
     const { id } = req.params
 
     const newSellings = sellings.filter(
-      (selling) => Number(selling['Código Venda']) !== Number(id)
+      (selling) => Number(selling.id) !== Number(id)
     )
 
     fs.writeFile(
@@ -63,7 +63,7 @@ export class sellingController {
       dbFileLocation,
       JSON.stringify(
         sellings.map((selling) =>
-          selling['Código Venda'] === Number(id) ? newSelling : selling
+          selling.id === Number(id) ? newSelling : selling
         )
       ),
       (err) => {
