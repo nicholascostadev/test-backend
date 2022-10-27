@@ -8,3 +8,5 @@ interface Selling {
   'Valor Unitário': number
   'Valor Final': number
 }
+
+type DateOrder = 'default' | 'asc' | 'desc'

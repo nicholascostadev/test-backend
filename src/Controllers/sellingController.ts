@@ -5,14 +5,39 @@ import sellings from '../db.json'
 const dbFileLocation = path.join(__dirname, '..', 'db.json')
 
 export class sellingController {
+  // TODO: Finish sorting
+  // we're already getting the sorting direction from the client,
+  // but we need to make the sorting work, we're receiving 'asc' | 'desc' | 'default'
+  // default, return as it is in db.json, asc, return from lower to higher,
+  // desc, return from higher to lower
   static getAllSellings(req: Request, res: Response) {
     const query = req.query
+
+    const sellingsCopy = [...sellings]
 
     const limit = Number(query._limit) || 20
     const offset = Number(query._offset) || 0
 
-    res.status(200).json(sellings.slice(offset, limit))
+    const dateOrder = query.dateOrder as DateOrder | undefined
+
+    switch (dateOrder) {
+      case 'asc':
+        sellingsCopy.sort((a, b) => {
+          return new Date(a['Data']).getTime() - new Date(b['Data']).getTime()
+        })
+        break
+      case 'desc':
+        sellingsCopy.sort((a, b) => {
+          return new Date(b['Data']).getTime() - new Date(a['Data']).getTime()
+        })
+        break
+      default:
+        return res.status(200).json(sellings.slice(offset, limit))
+    }
+
+    res.status(200).json(sellingsCopy.slice(offset, limit))
   }
+
   static createSelling(req: Request, res: Response) {
     const { selling: newSelling }: { selling: Selling } = req.body
 
@@ -35,6 +60,7 @@ export class sellingController {
     const { id } = req.params
 
     const newSellings = sellings.filter(
+      // @ts-ignore
       (selling) => Number(selling.id) !== Number(id)
     )
 
@@ -63,6 +89,7 @@ export class sellingController {
       dbFileLocation,
       JSON.stringify(
         sellings.map((selling) =>
+          // @ts-ignore
           selling.id === Number(id) ? newSelling : selling
         )
       ),
@@ -99,6 +126,7 @@ export class sellingController {
     const { ids } = req.params
     const idsArray = ids.split(',')
     const newSellings = sellings.filter(
+      // @ts-ignore
       (selling) => !idsArray.includes(String(selling.id))
     )
     fs.writeFile(
