@@ -4,10 +4,10 @@ import sellings from '../db.json'
 
 export class sellingController {
   static getAllSellings(req: Request, res: Response) {
-    const headers = req.headers
+    const query = req.query
 
-    const limit = Number(headers.limit) || 20
-    const offset = Number(headers.offset) || 0
+    const limit = Number(query._limit) || 20
+    const offset = Number(query._offset) || 0
 
     res.status(200).json(sellings.slice(offset, limit))
   }
