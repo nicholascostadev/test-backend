@@ -1,10 +1,7 @@
 import { Router } from 'express'
-import cors from 'cors'
 import { sellingController } from '../Controllers/sellingController'
 
 const router = Router()
-router.use(cors())
-
 // get all sellings
 router.get('/sellings', sellingController.getAllSellings)
 // create a new selling
