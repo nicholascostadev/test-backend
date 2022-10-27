@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
-import fs from 'fs'
+import * as fs from 'fs'
+import path from 'path'
 import sellings from '../db.json'
+const dbFileLocation = path.join(__dirname, '..', 'db.json')
 
 export class sellingController {
   static getAllSellings(req: Request, res: Response) {
@@ -12,10 +14,10 @@ export class sellingController {
     res.status(200).json(sellings.slice(offset, limit))
   }
   static createSelling(req: Request, res: Response) {
-    const { selling: newSelling } = req.body
+    const { selling: newSelling }: { selling: Selling } = req.body
 
     fs.writeFile(
-      './db.json',
+      dbFileLocation,
       JSON.stringify([...sellings, newSelling]),
       (err) => {
         if (err) {
@@ -31,25 +33,34 @@ export class sellingController {
 
   static deleteSelling(req: Request, res: Response) {
     const { id } = req.params
+
     const newSellings = sellings.filter(
-      (selling) => selling['Código Venda'] !== Number(id)
+      (selling) => Number(selling['Código Venda']) !== Number(id)
     )
 
-    fs.writeFile('./db.json', JSON.stringify(newSellings), (err) => {
-      if (err) {
-        res.status(500).json({ message: 'Error while deleting the selling' })
-      } else {
-        res.status(200).json({ message: 'Selling deleted successfully' })
+    fs.writeFile(
+      dbFileLocation,
+      JSON.stringify(newSellings),
+      { encoding: 'utf8' },
+      (err) => {
+        if (err) {
+          res.status(500).json({ message: 'Error while deleting the selling' })
+        } else {
+          res.status(200).json({
+            message: 'Selling deleted successfully',
+            data: newSellings,
+          })
+        }
       }
-    })
+    )
   }
 
   static updateSelling(req: Request, res: Response) {
     const { id } = req.params
-    const { selling: newSelling } = req.body
+    const { selling: newSelling }: { selling: Selling } = req.body
 
     fs.writeFile(
-      './db.json',
+      dbFileLocation,
       JSON.stringify(
         sellings.map((selling) =>
           selling['Código Venda'] === Number(id) ? newSelling : selling
