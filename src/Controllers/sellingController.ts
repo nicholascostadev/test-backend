@@ -75,4 +75,46 @@ export class sellingController {
       }
     )
   }
+
+  static newId(req: Request, res: Response) {
+    // add unique id to all sellings in db
+    const newSellings = sellings.map((selling, index) => ({
+      ...selling,
+      id: index + 1,
+    }))
+    fs.writeFile(
+      dbFileLocation,
+      JSON.stringify(newSellings),
+      { encoding: 'utf8' },
+      (err) => {
+        if (err) {
+          res.status(500).json({ message: 'Error while updating the selling' })
+        } else {
+          res.status(200).json({ message: 'Selling updated successfully' })
+        }
+      }
+    )
+  }
+  static deleteManySellings(req: Request, res: Response) {
+    const { ids } = req.params
+    const idsArray = ids.split(',')
+    const newSellings = sellings.filter(
+      (selling) => !idsArray.includes(String(selling.id))
+    )
+    fs.writeFile(
+      dbFileLocation,
+      JSON.stringify(newSellings),
+      { encoding: 'utf8' },
+      (err) => {
+        if (err) {
+          res.status(500).json({ message: 'Error while deleting the selling' })
+        } else {
+          res.status(200).json({
+            message: 'Selling deleted successfully',
+            data: newSellings,
+          })
+        }
+      }
+    )
+  }
 }
