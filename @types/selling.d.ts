@@ -1,4 +1,5 @@
 interface Selling {
+  id: number
   'Código Venda': number
   Data: string
   'ID Loja': string
